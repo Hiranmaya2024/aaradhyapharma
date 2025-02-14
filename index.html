@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aaradhya Pharmaceuticals - Login</title>
+  <link rel="stylesheet" href="styles/stylesn.css">
+</head>
+<body>
+  <header>
+    <div class="logo">Aaradhya Pharmaceuticals</div>
+  </header>
+  <main class="login-container">
+    <div class="header-group">
+      <img src="./images/logo.jpg" alt="Aaradhya Pharmaceuticals Logo" class="logo-image">
+      <h2 style="text-align:center">Aaradhya Pharmaceuticals</h2>
+    </div>
+    <div class="login-group">
+      <form id="loginForm" class="login-form">
+        <h2 style="text-align:center">Login</h2>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password">
+        <button type="submit">Login</button>
+        <a href="#" class="forgot-password">Forgot Password?</a>
+        <p id="errorMessage" class="text-danger text-center mt-3"></p>
+      </form>
+    </div>
+  </main>
+  <footer class="footer">
+    &copy; 2025 Aaradhya Pharmaceuticals. All rights reserved. Contact us: pharmaceuticalsaaradhya@gmail.com
+  </footer>
+  <script src="scripts/auth.js"></script>
+  <script src="./scripts/config.js"></script>
+  <script src="./scripts/google-sheets-api.js"></script>
+</body>
+</html>

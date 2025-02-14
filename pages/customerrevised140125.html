@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Customer Dashboard</title>
+        <link rel="stylesheet" href="../styles/styles.css">
+        <link rel="stylesheet" href="../styles/table.css">
+        <link rel="stylesheet" href="../styles/offers0701.css">
+        <link rel="stylesheet" href="../styles/stylesn.css">
+       <!-- <script type="module">
+            import { jsPDF } from 'https://cdn.jsdelivr.net/npm/jspdf@2.4.0/dist/jspdf.es.min.js';
+            import 'https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.13/dist/jspdf.plugin.autotable.js';
+            import '../scripts/order170125image.js';
+        </script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+
+    </head>
+<body>
+    <header>
+        <div class="dashboard-container">
+            <h1>Welcome Back, <span id="customer-nam">>customernam</span></h1>
+            <button class="button" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="tab-container">
+            <div class="tab active" onclick="showTab('account-details')">Account Details</div>
+            <div class="tab" onclick="showTab('view-ledger')">View Ledger</div>
+            <div class="tab" onclick="showTab('order')">Order</div>
+            <div class="tab" onclick="showTab('offer')">Offer</div>
+        </div>
+        
+
+        <!-- Account Details Section -->
+        <div id="account-details" class="tab-content active section">
+    <h2>Account Details</h2>
+    <div class="account-details-container">
+        <!-- Left Section (Customer Photo, Name, Address) -->
+        <div class="left-side">
+            <div class="customer-photo">
+               <!-- <img src="../images/kedar.jpg" alt="Customer Photo" id="customer-photo">-->
+            </div>
+            <div class="offercard1">
+                <img src="../images/kedar.jpg" alt="Customer Photo" id="customer-photo" class="small-image round-frame">
+                <div class="offercard">
+                <div>
+                <p>Shop Name: <span id="shop-name">shopName</p>
+                <p>Area: <span id="customer-address">address</p>
+                <p>Prop: <span id="customer-name">customerrname</p>              
+                <p>Phone: <span id="customer-phone">phone</p>  
+                <p>TourDay:<span id="tour-day">tourday</span></p>
+                <p>Nextvisit: <span id="next-visit">Nextvisit</span></p>
+                </div> 
+                </div>
+            </div>
+            <h1>Google Maps</h1>
+            <div class="offercard">
+               <div class="google-map" id="map-container">
+                    <iframe id="map-frame" width="600" height="450" style="border:0;" 
+                     allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                     iframe.src= dynamicSrc;
+                    </iframe>
+              </div>
+            </div>     
+        </div>
+<style>
+    .offercard1 {
+    display: flex;
+    align-items: center;
+}
+
+.small-image {
+    width: 100px;
+    height: 100px;
+    margin-right: 20px; /* Add some space between the image and the text */
+}
+.round-frame {
+    border-radius: 50%;
+    border: 2px solid #ccc; /* Optional: Add a border to the round frame */
+}
+.customer-info {
+    display: flex;
+   
+}
+</style>
+        <!-- Right Section (Last Order, Last Payment, Current Due) -->
+        <div class="right-side">
+            <div class="offercard">
+                <h3>Last Order</h3>
+                <p>Date: <span id="last-order-date">lastOrderDate</span></p>
+                <p>Order ID: <span id="last-order-id">lastOrderId</span></p>
+                <p>Amount: <span id="last-order-amount">lastOrderAmount</span></p>
+            </div>
+            <div class="offercard">
+                <h3>Last Payment</h3>
+                <p>Date: <span id="last-payment-date">lastPaymentDate</span></p>
+                <p>Order ID: <span id="last-payment-id">${closestRow1.row[4]}</span></p>
+                <p>Amount: <span id="last-payment-amount">${closestRow1.row[3]}</span></p>
+            </div>
+            <div class="offercard">
+                <h3>Current Due</h3>
+                <p><span id="current-due">total</span></p>
+              <!--  <p><span id="default-due">sumFilteredSales</span></p>-->
+                <input type="number" id="payment-input" placeholder="Make Payment">
+                <button class="button" onclick="makePayment()">Pay</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <!-- View Ledger Section -->
+        <div id="view-ledger" class="tab-content section">
+            <h2>Customer Ledger</h2>
+            <div>
+                <div class="offercard" style="overflow-y: auto">
+                    <table id="ledgerTable">
+                    <thead class="table-primary" style="position: sticky; top: 0; background-color: #f1f1f1;">
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
+                        <th>Balance</th>
+                        <th>Days</th>
+                        <th>CD date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic rows will be added here -->
+                    </tbody>
+                    </table>
+                    <div id="paginationContainer" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- Order Section -->
+        <div id="order" class="tab-content section">
+            <h2>Order</h2>
+            <div id="order-container" style="display:flexbox">
+                <label for="companySelect">Select Company:</label>
+                <select id="companySelect" class="form-select">
+                    <option value="">Select company</option>
+                </select>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8">
+                <div id="stockTableContainer" class="table-responsive mt-3" style="height: 200px; overflow-y: auto;">
+                    <table id="stockTable">
+                        <thead class="table-primary" style="position: sticky; top: 0; background-color: #f1f1f1;">
+                            <tr>
+                                <th>Image</th>
+                                <th>Item</th>
+                                <th>MRP</th>
+                                <th>Rate</th>
+                                <th>Scheme</th>
+                                <th>Tax</th>
+                                <th>Stock</th>
+                                <th>Quantity</th>
+                                <th>Add</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Stock items will be dynamically loaded here -->
+                        </tbody>
+                    </table>
+                   <!-- <div id="paginationContainer" class="mt-3"></div>-->
+                </div>
+            </div>
+            <div class="col-md-4">
+                <!-- Image container -->
+                <div id="itemImageContainer" class="mt-3">
+                    <img id="itemImage" src="" alt="Item Image" style="width: 100%; display: none;">
+                </div>
+            </div>
+        </div>
+        <button id="showCartButton" class="btn btn-primary mt-3">Show Cart</button>
+        <div id="cartContainer" class="mt-3" style="display: none;"></div>
+        <button id="confirmOrderButton" class="btn btn-primary mt-3" style="display: none;">Confirm Order</button>
+    </div>
+    </div>
+    </div>
+        <!-- Offer Section -->
+        <div id="offer" class="tab-content section">
+            <div class="offers-container">
+            <div class="offer-card flex-item">
+                <img src="../images/offer1.jpg" alt="Offer 1">
+                <h2>Himalaya Facewash Free</h2>
+                <p>*Get a 12 pc jar of Himalya neem Facewash with Orders worth Rs. 5999/-. Limited period offer!</p>
+                <button>Claim Offer</button>
+            </div>
+            <div class="offer-card flex-item">
+                <img src="../images/offer3.jpg" alt="Offer 3">
+                <h2>Free Delivery</h2>
+                <p>*With orders worth Rs.11999/-, get a Leeford LS Belt absolutely free!</p>
+                <button>Claim Offer</button>
+            </div>
+            <div class="offer-card flex-item">
+                <img src="../images/offer3.jpg" alt="Offer 3">
+                <h2>Free Delivery</h2>
+                <p>*With orders worth Rs.11999/-, get a Leeford LS Belt absolutely free!</p>
+                <button>Claim Offer</button>
+            </div>
+            <div class="offer-card flex-item">
+                <img src="../images/offer1.jpg" alt="Offer 1">
+                <h2>Himalaya Facewash Free</h2>
+                <p>*Get a 12 pc jar of Himalya neem Facewash with Orders worth Rs. 5999/-. Limited period offer!</p>
+                <button>Claim Offer</button>
+            </div>
+            <div class="offer-card flex-item">
+                <img src="../images/offer1.jpg" alt="Offer 1">
+                <h2>Himalaya Facewash Free</h2>
+                <p>*Get a 12 pc jar of Himalya neem Facewash with Orders worth Rs. 5999/-. Limited period offer!</p>
+                <button>Claim Offer</button>
+            </div>
+            <div class="offer-card flex-item">
+                <img src="../images/offer1.jpg" alt="Offer 1">
+                <h2>Himalaya Facewash Free</h2>
+                <p>*Get a 12 pc jar of Himalya neem Facewash with Orders worth Rs. 5999/-. Limited period offer!</p>
+                <button>Claim Offer</button>
+            </div>
+            <!-- Add more offer cards as needed -->
+             </div>
+        </div>>   
+    </main>
+
+    <footer class="footer">
+        &copy; 2025 Aaradhya Pharmaceuticals. All rights reserved. Contact us: pharmaceuticalsaaradhya@gmail.com
+      </footer>
+    
+    <script src="../scripts/auth.js"></script>
+    <script src="../scripts/config.js"></script>
+    <script src="../scripts/google-sheets-api.js"></script>
+    <script src="../scripts/customer311224.js"></script>
+    <script src="../scripts/order170125image.js"></script>
+    <script src="../scripts/logout.js"></script>
+    <script src="../scripts/pagination.js"></script>
+   <!-- <script src="../scripts/order170125image.js"></script>-->
+    <script src="../scripts/offerlayout.js"></script>
+    <script>
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tabContent => {
+                tabContent.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show the selected tab content and activate the tab
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
+        function logout() {
+              if (confirm('Are you sure you want to logout?')) {
+    // Redirect to the login page or handle session cleanup
+    window.location.href = '../index.html';
+        }
+    }
+        function makePayment() {
+            const paymentAmount = document.getElementById('paymentAmount').value;
+            if (paymentAmount) {
+                sessionStorage.setItem('paymentAmount', paymentAmount);
+                window.open('payment.html', 'Payment Options', 'width=600,height=400');
+            } else {
+                alert('Please enter a payment amount.');
+            }
+        }
+                // Function to dynamically update the customer photo based on login ID
+                function updateCustomerPhoto(loginId) {
+            const customerPhoto = document.getElementById('customer-photo');
+            customerPhoto.src = `../images/${loginId}.PNG`;
+        }
+
+        // Example usage: Assuming you have the login ID stored in a variable
+        const loginId = sessionStorage.getItem('username'); // Replace with actual login ID
+        updateCustomerPhoto(loginId);
+    </script>
+</body>
+</html>
